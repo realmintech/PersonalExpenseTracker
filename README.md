@@ -1,3 +1,5 @@
+<img width="1882" height="856" alt="Screenshot 2025-11-11 215047" src="https://github.com/user-attachments/assets/a120c676-bf3c-4456-bd64-e9f15794299e" />
+<img width="1888" height="864" alt="Screenshot 2025-11-11 215017" src="https://github.com/user-attachments/assets/7e1bff38-3371-4b73-8899-e288a1861f37" />
 #  Personal Finance Tracker
 
 A lightweight, responsive **React + TypeScript** application to help users monitor their income and expenses. Track financial activity with custom categories, detailed filters, and interactive charts. Built with usability, responsiveness, and performance in mind.
