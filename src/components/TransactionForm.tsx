@@ -1,9 +1,20 @@
+"use client";
+
 import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { FiPlusCircle, FiEdit2, FiXCircle } from "react-icons/fi";
 import Button from "./ui/Button";
 import Input from "./ui/Input";
 import Select from "./ui/Select";
-import { Transaction } from "../App";
+
+
+export interface Transaction {
+  id: number;
+  type: "income" | "expense";
+  amount: number;
+  date: string;
+  category: string;
+  notes?: string;
+}
 
 interface TransactionFormProps {
   categories: string[];
@@ -30,7 +41,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
 
   const [newCategory, setNewCategory] = useState("");
 
-  // Populate form when editingTransaction changes
+
   useEffect(() => {
     if (editingTransaction) {
       setFormData({
@@ -51,6 +62,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     }
   }, [editingTransaction]);
 
+ 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -58,19 +70,40 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+
     if (!formData.amount || !formData.date || !formData.category) return;
 
-    addTransaction({
+    const newTransaction: Omit<Transaction, "id"> = {
       type: formData.type as "income" | "expense",
       amount: parseFloat(formData.amount),
       date: formData.date,
       category: formData.category,
       notes: formData.notes,
-    });
+    };
 
-    // Reset form after adding/updating
+    addTransaction(newTransaction);
+
+
+    if (!editingTransaction) {
+      const localData: Transaction[] =
+        JSON.parse(localStorage.getItem("transactions") || "[]") || [];
+      const sessionData: Transaction[] =
+        JSON.parse(sessionStorage.getItem("transactions") || "[]") || [];
+
+      const id = Date.now();
+      const fullTransaction = { ...newTransaction, id };
+
+      const updatedLocal = [...localData, fullTransaction];
+      const updatedSession = [...sessionData, fullTransaction];
+
+      localStorage.setItem("transactions", JSON.stringify(updatedLocal));
+      sessionStorage.setItem("transactions", JSON.stringify(updatedSession));
+    }
+
+  
     setFormData({
       type: "expense",
       amount: "",
@@ -80,6 +113,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     });
   };
 
+ 
   const handleAddCategory = (e: FormEvent) => {
     e.preventDefault();
     if (newCategory.trim()) {
@@ -116,7 +150,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             { value: "income", label: "Income" },
             { value: "expense", label: "Expense" },
           ]}
-          className="appearance-none  text-[#fff] p-2 rounded-md outline"
+          className="appearance-none text-white bg-[#b3270885] p-2 rounded-md outline"
         />
 
         <Input
@@ -146,7 +180,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             { value: "", label: "Select Category" },
             ...categories.map((cat) => ({ value: cat, label: cat })),
           ]}
-          className="appearance-none bg-white/10 text-[#fff] p-2 rounded-md outline"
+          className="appearance-none text-white bg-[#b3270885] p-2 rounded-md outline"
           required
         />
 
@@ -193,6 +227,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
             placeholder="Enter category name"
+            className="appearance-none bg-white/10 text-[#350802] p-2 rounded-md outline"
           />
           <Button
             type="submit"

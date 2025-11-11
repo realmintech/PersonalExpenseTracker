@@ -49,7 +49,7 @@ const TransactionFilter: React.FC<TransactionFilterProps> = ({
           onClick={handleDownload}
           className="bg-[#E5A823] hover:bg-[#350802] hover:text-[#F9F5EC] text-[#350802] px-5 py-2 rounded-md font-medium transition-all"
         >
-          ⬇ Export CSV
+          Export CSV
         </Button>
       </div>
 

@@ -35,7 +35,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
               {transactions.map((t, index) => (
                 <tr
                   key={t.id}
-                  className={`#{
+                  className={`${
                     index % 2 === 0 ? "bg-white/10" : "bg-white/5"
                   } hover:bg-white/20 transition-colors duration-200`}
                 >
@@ -56,7 +56,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                       t.type === "income" ? "text-green-400" : "text-red-400"
                     }`}
                   >
-                    ${t.amount.toFixed(2)}
+                    #{t.amount.toFixed(2)}
                   </td>
                   <td className="py-3 px-4">{t.category}</td>
                   <td className="py-3 px-4">{t.notes || "-"}</td>

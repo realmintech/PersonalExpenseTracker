@@ -1,5 +1,7 @@
+"use client";
+
 import { useMemo } from "react";
-import { Bar, Pie } from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,6 +11,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartOptions,
 } from "chart.js";
 import { Transaction } from "../App";
 
@@ -48,23 +51,27 @@ const FinanceChart: React.FC<FinanceChartProps> = ({ transactions }) => {
         {
           label: "Income",
           data: incomeData,
-          backgroundColor: "rgba(229, 168, 35, 0.7)",
+          backgroundColor: "rgba(34,197,94,0.8)",
           borderRadius: 8,
         },
         {
           label: "Expense",
           data: expenseData,
-          backgroundColor: "rgba(23,68,68,0.8)", 
+          backgroundColor: "rgba(239,68,68,0.8)",
           borderRadius: 8,
         },
       ],
     };
   }, [transactions]);
 
-  const barOptions = {
+  const barOptions: ChartOptions<"bar"> = {
     responsive: true,
+    maintainAspectRatio: false, 
     plugins: {
-      legend: { position: "top" as const, labels: { color: "#350802" } },
+      legend: {
+        position: "top",
+        labels: { color: "#350802", font: { family: "Poppins" } },
+      },
       title: {
         display: true,
         text: "Income vs Expense by Category",
@@ -83,7 +90,7 @@ const FinanceChart: React.FC<FinanceChartProps> = ({ transactions }) => {
     },
   };
 
-  const pieChartData = useMemo(() => {
+  const doughnutData = useMemo(() => {
     const categories = [...new Set(transactions.map((t) => t.category))];
     const totalPerCategory = categories.map((cat) =>
       transactions
@@ -91,36 +98,41 @@ const FinanceChart: React.FC<FinanceChartProps> = ({ transactions }) => {
         .reduce((sum, t) => sum + t.amount, 0)
     );
 
-    const backgroundColors = categories.map((cat) => {
-      const income = transactions
-        .filter((t) => t.category === cat && t.type === "income")
-        .reduce((sum, t) => sum + t.amount, 0);
-      const expense = transactions
-        .filter((t) => t.category === cat && t.type === "expense")
-        .reduce((sum, t) => sum + t.amount, 0);
-      return income >= expense ? "rgba(34,197,94,0.7)" : "rgba(239,68,68,0.7)";
-    });
+    const colorPalette = [
+      "rgba(255,99,132,0.8)",
+      "rgba(54,162,235,0.8)",
+      "rgba(255,206,86,0.8)",
+      "rgba(75,192,192,0.8)",
+      "rgba(153,102,255,0.8)",
+      "rgba(255,159,64,0.8)",
+      "rgba(34,197,94,0.8)",
+    ];
 
     return {
       labels: categories,
       datasets: [
         {
-          label: "Total Amount per Category",
+          label: "Total by Category",
           data: totalPerCategory,
-          backgroundColor: backgroundColors,
+          backgroundColor: colorPalette.slice(0, categories.length),
           borderColor: "#fff",
           borderWidth: 2,
+          hoverOffset: 12,
         },
       ],
     };
   }, [transactions]);
 
-  const pieOptions = {
+  const doughnutOptions: ChartOptions<"doughnut"> = {
     responsive: true,
+    cutout: "70%",
     plugins: {
       legend: {
-        position: "right" as const,
-        labels: { color: "#350802", font: { family: "Poppins", size: 14 } },
+        position: "right",
+        labels: {
+          color: "#350802",
+          font: { family: "Poppins", size: 14 },
+        },
       },
       title: {
         display: true,
@@ -138,14 +150,14 @@ const FinanceChart: React.FC<FinanceChartProps> = ({ transactions }) => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Bar Chart */}
-      <div className="bg-gradient-to-br from-[#F9F5EC] to-[#fff] p-6 rounded-2xl shadow-lg border border-[#E5A823]/30 backdrop-blur-md">
+      
+      <div className="bg-gradient-to-br from-[#F9F5EC] to-[#fff] p-6 rounded-2xl shadow-lg border border-[#E5A823]/30 backdrop-blur-md h-[400px] md:h-[500px]">
         <Bar data={barChartData} options={barOptions} />
       </div>
 
-      {/* Pie Chart */}
-      <div className="bg-gradient-to-br from-[#F9F5EC] to-[#fff] p-6 rounded-2xl shadow-lg border border-[#E5A823]/30 backdrop-blur-md">
-        <Pie data={pieChartData} options={pieOptions} />
+     
+      <div className="bg-gradient-to-br from-[#F9F5EC] to-[#fff] p-6 rounded-2xl shadow-lg border border-[#E5A823]/30 backdrop-blur-md flex justify-center items-center h-[400px] md:h-[500px]">
+        <Doughnut data={doughnutData} options={doughnutOptions} />
       </div>
     </div>
   );

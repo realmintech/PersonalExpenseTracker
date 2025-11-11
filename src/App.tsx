@@ -5,13 +5,30 @@ import TransactionFilter from "./components/TransactionFilter";
 import TransactionList from "./components/TransactionList";
 import FinanceChart from "./components/FinanceChart";
 import useLocalStorage from "./components/hooks/useLocalStorage";
-// import { Transaction, Filters } from "./components/"; 
+
+
+export interface Transaction {
+  id: number;
+  title: string;
+  amount: number;
+  category: string;
+  date: string; 
+  type: "income" | "expense";
+}
+
+export interface Filters {
+  category: string;
+  startDate: string;
+  endDate: string;
+  sortBy: "date-desc" | "date-asc" | "amount-desc" | "amount-asc";
+}
 
 const App: React.FC = () => {
   const [transactions, setTransactions] = useLocalStorage<Transaction[]>(
     "transactions",
     []
   );
+
   const [categories, setCategories] = useLocalStorage<string[]>("categories", [
     "Salary",
     "Freelance",
@@ -28,14 +45,12 @@ const App: React.FC = () => {
     sortBy: "date-desc",
   });
 
-  // Track the transaction being edited
   const [editingTransaction, setEditingTransaction] =
     useState<Transaction | null>(null);
 
-  // Add or update transaction
+  // ✅ Add or update transaction
   const addOrUpdateTransaction = (transaction: Omit<Transaction, "id">) => {
     if (editingTransaction) {
-      // Update existing transaction
       setTransactions((prev) =>
         prev.map((t) =>
           t.id === editingTransaction.id ? { ...t, ...transaction } : t
@@ -43,23 +58,25 @@ const App: React.FC = () => {
       );
       setEditingTransaction(null);
     } else {
-      // Add new transaction
-      const newTransaction: Transaction = { ...transaction, id: Date.now() };
+      const newTransaction: Transaction = {
+        ...transaction,
+        id: Date.now(),
+      };
       setTransactions([...transactions, newTransaction]);
     }
   };
 
-  // Delete transaction
+
   const deleteTransaction = (id: number) => {
     setTransactions(transactions.filter((t) => t.id !== id));
   };
 
-  // Edit transaction
+
   const editTransaction = (transaction: Transaction) => {
     setEditingTransaction(transaction);
   };
 
-  // Filtered & sorted transactions
+ 
   const filteredTransactions = transactions
     .filter((t) => {
       const matchesCategory = filters.category
@@ -83,6 +100,8 @@ const App: React.FC = () => {
           return b.amount - a.amount;
         case "amount-asc":
           return a.amount - b.amount;
+        default:
+          return 0;
       }
     });
 
@@ -91,12 +110,12 @@ const App: React.FC = () => {
       <Header />
       <main className="max-w-7xl mx-auto p-6 space-y-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left column - Form */}
+         
           <div className="lg:col-span-1">
             <TransactionForm
               categories={categories}
               addTransaction={addOrUpdateTransaction}
-              addCategory={(cat) => {
+              addCategory={(cat: string) => {
                 if (!categories.includes(cat))
                   setCategories([...categories, cat]);
               }}
@@ -105,7 +124,7 @@ const App: React.FC = () => {
             />
           </div>
 
-          {/* Right column - Filters, Chart, and List */}
+          
           <div className="lg:col-span-2 space-y-6">
             <TransactionFilter
               categories={categories}
