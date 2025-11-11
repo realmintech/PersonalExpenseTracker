@@ -5,7 +5,7 @@ import Select from "./ui/Select";
 import { exportToCSV } from "./utils/exportToCSV";
 import { Transaction } from "../App";
 
-// Define filter types
+
 export type SortBy = "date-desc" | "date-asc" | "amount-desc" | "amount-asc";
 
 export interface Filters {
