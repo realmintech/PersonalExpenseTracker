@@ -31,7 +31,7 @@ A lightweight, responsive **React + TypeScript** application to help users monit
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/yourusername/personal-finance-tracker.git
+git clone https://github.com/realmintech/PersonalExpenseTracker.git
 cd personal-finance-tracker
 Install dependencies
 
