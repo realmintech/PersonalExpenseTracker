@@ -30,5 +30,5 @@ A lightweight, responsive React application to help users monitor their income a
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Akanimoh12/Personal-FinanceTracker-Web3BridgeExam.git
+   git clone https://github.com/realmintech/PersonalExpenseTracker.git
    cd Personal-FinanceTracker-Exam-Web3Bridge
